@@ -15,13 +15,15 @@
  */
 package com.gitblit.wicket;
 
+
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
+import org.apache.wicket.util.time.Duration;
 
 import com.gitblit.GitBlit;
 import com.gitblit.Keys;
@@ -79,8 +81,8 @@ public class GitBlitWebApp extends WebApplication {
 		}
 
 		// configure the resource cache duration to 90 days for deployment
-		if (!GitBlit.isDebugMode()) {
-			getResourceSettings().setDefaultCacheDuration(90 * 86400);
+		if (!GitBlit.isDebugMode()) {			
+			getResourceSettings().setDefaultCacheDuration(Duration.days(90));
 		}
 
 		// setup the standard gitweb-ish urls
