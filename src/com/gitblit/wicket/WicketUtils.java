@@ -25,17 +25,18 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.Request;
-import org.apache.wicket.behavior.HeaderContributor;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.resource.ContextRelativeResource;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.ContextRelativeResource;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.wicketstuff.googlecharts.AbstractChartData;
 import org.wicketstuff.googlecharts.IChartData;
@@ -53,25 +54,24 @@ import com.gitblit.utils.TimeUtils;
 public class WicketUtils {
 
 	public static void setCssClass(Component container, String value) {
-		container.add(new SimpleAttributeModifier("class", value));
+		container.add(new AttributeModifier("class", value));
 	}
 
 	public static void setCssStyle(Component container, String value) {
-		container.add(new SimpleAttributeModifier("style", value));
+		container.add(new AttributeModifier("style", value));
 	}
 
 	public static void setCssBackground(Component container, String value) {
-		String background = MessageFormat.format("background-color:{0};",
-				StringUtils.getColor(value));
-		container.add(new SimpleAttributeModifier("style", background));
+		String background = MessageFormat.format("background-color:{0};", StringUtils.getColor(value));
+		container.add(new AttributeModifier("style", background));
 	}
 
 	public static void setHtmlTooltip(Component container, String value) {
-		container.add(new SimpleAttributeModifier("title", value));
+		container.add(new AttributeModifier("title", value));
 	}
 
 	public static void setInputPlaceholder(Component container, String value) {
-		container.add(new SimpleAttributeModifier("placeholder", value));
+		container.add(new AttributeModifier("placeholder", value));
 	}
 
 	public static void setChangeTypeCssClass(Component container, ChangeType type) {
@@ -161,8 +161,7 @@ public class WicketUtils {
 			return newImage(wicketId, "file_h_16x16.png");
 		} else if (filename.endsWith(".sln")) {
 			return newImage(wicketId, "file_vs_16x16.png");
-		} else if (filename.endsWith(".csv") || filename.endsWith(".xls")
-				|| filename.endsWith(".xlsx")) {
+		} else if (filename.endsWith(".csv") || filename.endsWith(".xls") || filename.endsWith(".xlsx")) {
 			return newImage(wicketId, "file_excel_16x16.png");
 		} else if (filename.endsWith(".doc") || filename.endsWith(".docx")) {
 			return newImage(wicketId, "file_word_16x16.png");
@@ -189,14 +188,11 @@ public class WicketUtils {
 		return newImage(wicketId, "file_16x16.png");
 	}
 
-	public static ContextImage getRegistrationImage(String wicketId, FederationModel registration,
-			Component c) {
+	public static ContextImage getRegistrationImage(String wicketId, FederationModel registration, Component c) {
 		if (registration.isResultData()) {
-			return WicketUtils.newImage(wicketId, "information_16x16.png",
-					c.getString("gb.federationResults"));
+			return WicketUtils.newImage(wicketId, "information_16x16.png", c.getString("gb.federationResults"));
 		} else {
-			return WicketUtils.newImage(wicketId, "arrow_left.png",
-					c.getString("gb.federationRegistration"));
+			return WicketUtils.newImage(wicketId, "arrow_left.png", c.getString("gb.federationRegistration"));
 		}
 	}
 
@@ -222,28 +218,36 @@ public class WicketUtils {
 
 	public static Label newIcon(String wicketId, String css) {
 		Label lbl = new Label(wicketId);
-		setCssClass(lbl, css);		
+		setCssClass(lbl, css);
 		return lbl;
 	}
-	
+
 	public static Label newBlankIcon(String wicketId) {
 		Label lbl = new Label(wicketId);
 		setCssClass(lbl, "");
 		lbl.setRenderBodyOnly(true);
 		return lbl;
 	}
-	
+
 	public static ContextRelativeResource getResource(String file) {
 		return new ContextRelativeResource(file);
 	}
 
 	public static String getGitblitURL(Request request) {
-		HttpServletRequest req = ((WebRequest) request).getHttpServletRequest();
+		HttpServletRequest req = (HttpServletRequest) request.getContainerRequest();
 		return HttpUtils.getGitblitURL(req);
 	}
 
-	public static HeaderContributor syndicationDiscoveryLink(final String feedTitle,
-			final String url) {
+	public static Behavior syndicationDiscoveryLink(final String feedTitle, final String url) {
+
+		new Behavior() {
+			@Override
+			public void renderHead(Component component, IHeaderResponse response) {
+				// TODO Auto-generated method stub
+				super.renderHead(component, response);
+			}
+		};
+
 		return new HeaderContributor(new IHeaderContributor() {
 			private static final long serialVersionUID = 1L;
 
@@ -261,169 +265,160 @@ public class WicketUtils {
 	}
 
 	public static PageParameters newTokenParameter(String token) {
-		return new PageParameters("t=" + token);
+		return new PageParameters().add("t", token);
 	}
 
 	public static PageParameters newRegistrationParameter(String url, String name) {
-		return new PageParameters("u=" + url + ",n=" + name);
+		return new PageParameters().add("u", url).add("n", name);
 	}
 
 	public static PageParameters newUsernameParameter(String username) {
-		return new PageParameters("user=" + username);
+		return new PageParameters().add("user", username);
 	}
 
 	public static PageParameters newTeamnameParameter(String teamname) {
-		return new PageParameters("team=" + teamname);
+		return new PageParameters().add("team", teamname);
 	}
 
 	public static PageParameters newProjectParameter(String projectName) {
-		return new PageParameters("p=" + projectName);
+		return new PageParameters().add("p", projectName);
 	}
 
 	public static PageParameters newRepositoryParameter(String repositoryName) {
-		return new PageParameters("r=" + repositoryName);
+		return new PageParameters().add("r", repositoryName);
 	}
 
 	public static PageParameters newObjectParameter(String objectId) {
-		return new PageParameters("h=" + objectId);
+		return new PageParameters().add("h", objectId);
 	}
 
 	public static PageParameters newObjectParameter(String repositoryName, String objectId) {
 		if (StringUtils.isEmpty(objectId)) {
 			return newRepositoryParameter(repositoryName);
 		}
-		return new PageParameters("r=" + repositoryName + ",h=" + objectId);
+		return new PageParameters().add("r", repositoryName).add("h", objectId);
 	}
 
-	public static PageParameters newPathParameter(String repositoryName, String objectId,
-			String path) {
+	public static PageParameters newPathParameter(String repositoryName, String objectId, String path) {
 		if (StringUtils.isEmpty(path)) {
 			return newObjectParameter(repositoryName, objectId);
 		}
 		if (StringUtils.isEmpty(objectId)) {
-			return new PageParameters("r=" + repositoryName + ",f=" + path);
+			return new PageParameters().add("r", repositoryName).add("f", path);
 		}
-		return new PageParameters("r=" + repositoryName + ",h=" + objectId + ",f=" + path);
+		return new PageParameters().add("r", repositoryName).add("h", objectId).add("f", path);
 	}
 
-	public static PageParameters newLogPageParameter(String repositoryName, String objectId,
+	public static PageParameters newLogPageParameter(String repositoryName, String objectId, int pageNumber) {
+		if (pageNumber <= 1) {
+			return newObjectParameter(repositoryName, objectId);
+		}
+		if (StringUtils.isEmpty(objectId)) {
+			return new PageParameters().add("r", repositoryName).add("pg", pageNumber);
+		}
+		return new PageParameters().add("r", repositoryName).add("h", objectId).add("pg", pageNumber);
+	}
+
+	public static PageParameters newHistoryPageParameter(String repositoryName, String objectId, String path, int pageNumber) {
+		if (pageNumber <= 1) {
+			return newObjectParameter(repositoryName, objectId);
+		}
+		if (StringUtils.isEmpty(objectId)) {
+			return new PageParameters().add("r", repositoryName).add("f", path).add("pg", pageNumber);
+		}
+		return new PageParameters().add("r", repositoryName).add("h", objectId).add("f", path).add("pg", pageNumber);
+	}
+
+	public static PageParameters newBlobDiffParameter(String repositoryName, String baseCommitId, String commitId, String path) {
+		if (StringUtils.isEmpty(commitId)) {
+			return new PageParameters().add("r", repositoryName).add("f", path).add("hb", baseCommitId);
+		}
+		return new PageParameters().add("r", repositoryName).add("h", commitId).add("f", path).add("hb", baseCommitId);
+	}
+
+	public static PageParameters newSearchParameter(String repositoryName, String commitId, String search, Constants.SearchType type) {
+		if (StringUtils.isEmpty(commitId)) {
+			return new PageParameters().add("r", repositoryName).add("s", search).add("st", type.name());
+		}
+		return new PageParameters().add("r", repositoryName).add("h", commitId).add("s", search).add("st", type.name());
+	}
+
+	public static PageParameters newSearchParameter(String repositoryName, String commitId, String search, Constants.SearchType type,
 			int pageNumber) {
-		if (pageNumber <= 1) {
-			return newObjectParameter(repositoryName, objectId);
-		}
-		if (StringUtils.isEmpty(objectId)) {
-			return new PageParameters("r=" + repositoryName + ",pg=" + pageNumber);
-		}
-		return new PageParameters("r=" + repositoryName + ",h=" + objectId + ",pg=" + pageNumber);
-	}
-
-	public static PageParameters newHistoryPageParameter(String repositoryName, String objectId,
-			String path, int pageNumber) {
-		if (pageNumber <= 1) {
-			return newObjectParameter(repositoryName, objectId);
-		}
-		if (StringUtils.isEmpty(objectId)) {
-			return new PageParameters("r=" + repositoryName + ",f=" + path + ",pg=" + pageNumber);
-		}
-		return new PageParameters("r=" + repositoryName + ",h=" + objectId + ",f=" + path + ",pg="
-				+ pageNumber);
-	}
-
-	public static PageParameters newBlobDiffParameter(String repositoryName, String baseCommitId,
-			String commitId, String path) {
 		if (StringUtils.isEmpty(commitId)) {
-			return new PageParameters("r=" + repositoryName + ",f=" + path + ",hb=" + baseCommitId);
+			return new PageParameters().add("r", repositoryName).add("s", search).add("st", type.name()).add("pg", pageNumber);
 		}
-		return new PageParameters("r=" + repositoryName + ",h=" + commitId + ",f=" + path + ",hb="
-				+ baseCommitId);
-	}
-
-	public static PageParameters newSearchParameter(String repositoryName, String commitId,
-			String search, Constants.SearchType type) {
-		if (StringUtils.isEmpty(commitId)) {
-			return new PageParameters("r=" + repositoryName + ",s=" + search + ",st=" + type.name());
-		}
-		return new PageParameters("r=" + repositoryName + ",h=" + commitId + ",s=" + search
-				+ ",st=" + type.name());
-	}
-
-	public static PageParameters newSearchParameter(String repositoryName, String commitId,
-			String search, Constants.SearchType type, int pageNumber) {
-		if (StringUtils.isEmpty(commitId)) {
-			return new PageParameters("r=" + repositoryName + ",s=" + search + ",st=" + type.name()
-					+ ",pg=" + pageNumber);
-		}
-		return new PageParameters("r=" + repositoryName + ",h=" + commitId + ",s=" + search
-				+ ",st=" + type.name() + ",pg=" + pageNumber);
+		return new PageParameters().add("r", repositoryName).add("h", commitId).add("s", search).add("st", type.name())
+				.add("pg", pageNumber);
 	}
 
 	public static String getProjectName(PageParameters params) {
-		return params.getString("p", "");
+		return params.get("p").toString("");
 	}
 
 	public static String getRepositoryName(PageParameters params) {
-		return params.getString("r", "");
+		return params.get("r").toString("");
 	}
 
 	public static String getObject(PageParameters params) {
-		return params.getString("h", null);
+		return params.get("h").toOptionalString();
 	}
 
 	public static String getPath(PageParameters params) {
-		return params.getString("f", null);
+		return params.get("f").toOptionalString();
 	}
 
 	public static String getBaseObjectId(PageParameters params) {
-		return params.getString("hb", null);
+		return params.get("hb").toOptionalString();
 	}
 
 	public static String getSearchString(PageParameters params) {
-		return params.getString("s", null);
+		return params.get("s").toOptionalString();
 	}
 
 	public static String getSearchType(PageParameters params) {
-		return params.getString("st", null);
+		return params.get("st").toOptionalString();
 	}
 
 	public static int getPage(PageParameters params) {
 		// index from 1
-		return params.getInt("pg", 1);
+		return params.get("pg").toInt(1);
 	}
 
 	public static String getRegEx(PageParameters params) {
-		return params.getString("x", "");
+		return params.get("x").toString("");
 	}
 
 	public static String getSet(PageParameters params) {
-		return params.getString("set", "");
+		return params.get("set").toString("");
 	}
 
 	public static String getTeam(PageParameters params) {
-		return params.getString("team", "");
+		return params.get("team").toString("");
 	}
 
 	public static int getDaysBack(PageParameters params) {
-		return params.getInt("db", 14);
+		return params.get("db").toInt(14);
 	}
 
 	public static String getUsername(PageParameters params) {
-		return params.getString("user", "");
+		return params.get("user").toString("");
 	}
 
 	public static String getTeamname(PageParameters params) {
-		return params.getString("team", "");
+		return params.get("team").toString("");
 	}
 
 	public static String getToken(PageParameters params) {
-		return params.getString("t", "");
+		return params.get("t").toString("");
 	}
 
 	public static String getUrlParameter(PageParameters params) {
-		return params.getString("u", "");
+		return params.get("u").toString("");
 	}
 
 	public static String getNameParameter(PageParameters params) {
-		return params.getString("n", "");
+		return params.get("n").toString("");
 	}
 
 	public static Label createDateLabel(String wicketId, Date date, TimeZone timeZone, TimeUtils timeUtils) {
@@ -495,7 +490,7 @@ public class WicketUtils {
 		if (TimeUtils.isToday(date)) {
 			title = timeUtils.today();
 		} else if (TimeUtils.isYesterday(date)) {
-				title = timeUtils.yesterday();
+			title = timeUtils.yesterday();
 		} else if (date.getTime() <= System.currentTimeMillis()) {
 			// past
 			title = timeUtils.timeAgo(date);
@@ -513,8 +508,7 @@ public class WicketUtils {
 	}
 
 	public static Label createTimestampLabel(String wicketId, Date date, TimeZone timeZone, TimeUtils timeUtils) {
-		String format = GitBlit.getString(Keys.web.datetimestampLongFormat,
-				"EEEE, MMMM d, yyyy HH:mm Z");
+		String format = GitBlit.getString(Keys.web.datetimestampLongFormat, "EEEE, MMMM d, yyyy HH:mm Z");
 		DateFormat df = new SimpleDateFormat(format);
 		if (timeZone == null) {
 			timeZone = GitBlit.getTimezone();

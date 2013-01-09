@@ -15,15 +15,16 @@
  */
 package com.gitblit.wicket;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.form.StatelessForm;
-import org.apache.wicket.protocol.http.WicketURLDecoder;
-import org.apache.wicket.protocol.http.request.WebRequestCodingStrategy;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.encoding.UrlDecoder;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.apache.wicket.util.string.Strings;
 import org.slf4j.Logger;
@@ -99,12 +100,11 @@ public class SessionlessForm<T> extends StatelessForm<T> {
 	 *            The open tag for the body
 	 */
 	@Override
-	protected void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag)
-	{
-		// render the hidden bookmarkable page field
+	public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
 		AppendingStringBuffer buffer = new AppendingStringBuffer(HIDDEN_DIV_START);
 		buffer.append("<input type=\"hidden\" name=\"")
-			.append(WebRequestCodingStrategy.BOOKMARKABLE_PAGE_PARAMETER_NAME)
+			// TODO Please James Verify Here...
+			//.append(WebRequestCodingStrategy.BOOKMARKABLE_PAGE_PARAMETER_NAME)
 			.append("\" value=\":")
 			.append(pageClass.getName())
 			.append("\" />");
@@ -112,7 +112,7 @@ public class SessionlessForm<T> extends StatelessForm<T> {
 		// insert the page parameters, if any, as hidden fields as long as they
 		// do not collide with any child wicket:id of the form.
 		if (pageParameters != null) {
-			for (String key : pageParameters.keySet()) {
+			for (String key : pageParameters.getNamedKeys()) {
 				Component c = get(key);
 				if (c != null) {
 					// this form has a field id which matches the
@@ -120,7 +120,7 @@ public class SessionlessForm<T> extends StatelessForm<T> {
 					log.warn(MessageFormat.format("Skipping page parameter \"{0}\" from sessionless form hidden fields because it collides with a form child wicket:id", key));
 					continue;
 				}
-				String value = pageParameters.getString(key);
+				String value = pageParameters.get(key).toString("");
 				buffer.append("<input type=\"hidden\" name=\"")
 				.append(recode(key))
 				.append("\" value=\"")
@@ -128,11 +128,9 @@ public class SessionlessForm<T> extends StatelessForm<T> {
 				.append("\" />");
 			}
 		}
-
-		buffer.append("</div>");
-		getResponse().write(buffer);
+		
 		super.onComponentTagBody(markupStream, openTag);
-	}
+	}	
 	
 	/**
 	 * Take URL-encoded query string value, unencode it and return HTML-escaped version
@@ -140,9 +138,11 @@ public class SessionlessForm<T> extends StatelessForm<T> {
 	 * @param s
 	 *            value to reencode
 	 * @return reencoded value
+	 * @throws UnsupportedEncodingException 
 	 */
 	private String recode(String s) {
-		String un = WicketURLDecoder.QUERY_INSTANCE.decode(s);
+		String enc = Application.get().getRequestCycleSettings().getResponseRequestEncoding();
+		String un = UrlDecoder.QUERY_INSTANCE.decode(s,enc);		
 		return Strings.escapeMarkup(un).toString();
 	}
 }

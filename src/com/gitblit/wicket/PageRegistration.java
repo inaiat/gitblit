@@ -19,8 +19,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.utils.StringUtils;
 
@@ -138,8 +138,8 @@ public class PageRegistration implements Serializable {
 				isSelected = false;
 			} else {
 				parameters = new PageParameters(params);
-				if (parameters.containsKey(parameter)) {
-					isSelected = params.getString(parameter).equals(value);
+				if (parameters.getNamedKeys().contains(parameter)) {
+					isSelected = params.get(parameter).equals(value);
 					if (isSelected) {
 						// already selected, so remove this enables toggling
 						parameters.remove(parameter);
@@ -160,7 +160,7 @@ public class PageRegistration implements Serializable {
 				if (StringUtils.isEmpty(value)) {
 					this.parameters.remove(parameter);
 				} else {
-					this.parameters.put(parameter, value);
+					this.parameters.add(parameter, value);
 				}
 			}
 		}
