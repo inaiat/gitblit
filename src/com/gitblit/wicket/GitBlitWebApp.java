@@ -15,9 +15,9 @@
  */
 package com.gitblit.wicket;
 
-
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -81,7 +81,7 @@ public class GitBlitWebApp extends WebApplication {
 		}
 
 		// configure the resource cache duration to 90 days for deployment
-		if (!GitBlit.isDebugMode()) {			
+		if (!GitBlit.isDebugMode()) {
 			getResourceSettings().setDefaultCacheDuration(Duration.days(90));
 		}
 
@@ -127,31 +127,46 @@ public class GitBlitWebApp extends WebApplication {
 	}
 
 	private void mount(String location, Class<? extends WebPage> clazz, String... parameters) {
+
 		if (parameters == null) {
 			parameters = new String[] {};
-		}
+		} 
 		if (!GitBlit.getBoolean(Keys.web.mountParameters, true)) {
 			parameters = new String[] {};
 		}
-		mount(new GitblitParamUrlCodingStrategy(location, clazz, parameters));
+		
+		//TODO Convert to Wicket 6
+		// Every parameters are optional?
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append(location);
+		if (parameters.length>0) {
+			builder.append("/");
+		}		
+		for (String string : parameters) {
+			builder.append("#${").append(string).append("}");		
+		}
+		
+		mountPage(builder.toString(), clazz);
+		//mount(new GitblitParamUrlCodingStrategy(location, clazz, parameters));
 	}
 
 	@Override
 	public Class<? extends Page> getHomePage() {
 		return RepositoriesPage.class;
 	}
-	
+
 	@Override
 	public final Session newSession(Request request, Response response) {
 		return new GitBlitWebSession(request);
 	}
 
 	@Override
-	public final String getConfigurationType() {
+	public final RuntimeConfigurationType getConfigurationType() {
 		if (GitBlit.isDebugMode()) {
-			return Application.DEVELOPMENT;
+			return RuntimeConfigurationType.DEVELOPMENT;
 		}
-		return Application.DEPLOYMENT;
+		return RuntimeConfigurationType.DEPLOYMENT;
 	}
 
 	public static GitBlitWebApp get() {

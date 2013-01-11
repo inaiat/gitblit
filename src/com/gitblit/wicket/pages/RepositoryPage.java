@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -36,7 +35,8 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.RequestUtils;
-import org.apache.wicket.request.target.basic.RedirectRequestTarget;
+import org.apache.wicket.request.UrlUtils;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
@@ -170,8 +170,10 @@ public abstract class RepositoryPage extends BasePage {
 			pages.put("docs", new PageRegistration("gb.docs", DocsPage.class, params));
 		}
 		if (JGitUtils.getPagesBranch(r) != null) {
+			//TODO Wicket 6 verify UrlUtils.rewriteToContextRelative(getRequest().getUrl().toString(), getRequestCycle())
+			//--> Wicket 1.4 = getRequest().getRelativePathPrefixToContextRoot()			
 			OtherPageLink pagesLink = new OtherPageLink("gb.pages", PagesServlet.asLink(
-					getRequest().getRelativePathPrefixToContextRoot(), repositoryName, null));
+					UrlUtils.rewriteToContextRelative(getRequest().getUrl().toString(), getRequestCycle()), repositoryName, null));
 			pages.put("pages", pagesLink);
 		}
 

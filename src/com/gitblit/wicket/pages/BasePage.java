@@ -32,22 +32,26 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.RedirectToUrlException;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
-import org.apache.wicket.protocol.http.RequestUtils;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
+import org.apache.wicket.request.Url;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.flow.RedirectToUrlException;
+import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +73,10 @@ import com.gitblit.wicket.WicketUtils;
 import com.gitblit.wicket.panels.LinkPanel;
 
 public abstract class BasePage extends WebPage {
+	
+	private static final long serialVersionUID = -8118978869813114548L;
+
+	private ResourceReference BOOTSTRAP_RESPONSIVE = new CssResourceReference(BasePage.class, "bootstrap/css/bootstrap-responsive.css");
 
 	private final Logger logger;
 	
@@ -90,7 +98,17 @@ public abstract class BasePage extends WebPage {
 	
 	private void customizeHeader() {
 		if (GitBlit.getBoolean(Keys.web.useResponsiveLayout, true)) {
-			add(CSSPackageResource.getHeaderContribution("bootstrap/css/bootstrap-responsive.css"));
+			add(new Behavior() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void renderHead(Component component, IHeaderResponse response) {
+					super.renderHead(component, response);
+					response.render(CssHeaderItem.forReference(BOOTSTRAP_RESPONSIVE));
+				}
+			});
+			
+			
 		}
 	}
 	
@@ -141,7 +159,7 @@ public abstract class BasePage extends WebPage {
 		}
 		
 		// try to authenticate by servlet request
-		HttpServletRequest httpRequest = ((WebRequest) getRequestCycle().getRequest()).getHttpServletRequest();
+		HttpServletRequest httpRequest = (HttpServletRequest) getRequest().getContainerRequest();
 		UserModel user = GitBlit.self().authenticate(httpRequest);
 
 		// Login the user
@@ -281,7 +299,7 @@ public abstract class BasePage extends WebPage {
 
 	protected String getServerName() {
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
-		HttpServletRequest req = servletWebRequest.getHttpServletRequest();
+		HttpServletRequest req = servletWebRequest.getContainerRequest();
 		return req.getServerName();
 	}
 	
@@ -313,8 +331,8 @@ public abstract class BasePage extends WebPage {
 
 		boolean hasParameter = false;
 		String regex = WicketUtils.getRegEx(params);
-		String team = WicketUtils.getTeam(params);
-		int daysBack = params.getInt("db", 0);
+		String team = WicketUtils.getTeam(params);		
+		int daysBack = params.get("db").toInt(0);
 
 		List<ProjectModel> availableModels = getProjectModels();
 		Set<ProjectModel> models = new HashSet<ProjectModel>();
@@ -391,8 +409,11 @@ public abstract class BasePage extends WebPage {
 		logger.error(message  + " for " + GitBlitWebSession.get().getUsername());
 		if (redirect) {
 			GitBlitWebSession.get().cacheErrorMessage(message);
-			String relativeUrl = urlFor(RepositoriesPage.class, null).toString();
-			String absoluteUrl = RequestUtils.toAbsolutePath(relativeUrl);
+//			String relativeUrl = urlFor(RepositoriesPage.class, null).toString();
+//			String absoluteUrl = RequestUtils.toAbsolutePath(relativeUrl);			
+			//TODO Wicket 6. Verify abstoluteUrl
+			String absoluteUrl = RequestCycle.get().getUrlRenderer().renderFullUrl(
+					   Url.parse(urlFor(RepositoriesPage.class,null).toString()));			
 			throw new RedirectToUrlException(absoluteUrl);
 		} else {
 			super.error(message);
@@ -410,7 +431,7 @@ public abstract class BasePage extends WebPage {
 	}
 
 	public void authenticationError(String message) {
-		logger.error(getRequest().getURL() + " for " + GitBlitWebSession.get().getUsername());
+		logger.error(getRequest().getUrl() + " for " + GitBlitWebSession.get().getUsername());
 		if (!GitBlitWebSession.get().isLoggedIn()) {
 			// cache the request if we have not authenticated.
 			// the request will continue after authentication.

@@ -30,6 +30,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.StringHeaderItem;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
@@ -238,19 +239,12 @@ public class WicketUtils {
 		return HttpUtils.getGitblitURL(req);
 	}
 
-	public static Behavior syndicationDiscoveryLink(final String feedTitle, final String url) {
+	public static IHeaderContributor syndicationDiscoveryLink(final String feedTitle, final String url) {
 
-		new Behavior() {
-			@Override
-			public void renderHead(Component component, IHeaderResponse response) {
-				// TODO Auto-generated method stub
-				super.renderHead(component, response);
-			}
-		};
-
-		return new HeaderContributor(new IHeaderContributor() {
+		return new IHeaderContributor() {
 			private static final long serialVersionUID = 1L;
-
+			
+			@Override
 			public void renderHead(IHeaderResponse response) {
 				String contentType = "application/rss+xml";
 
@@ -259,9 +253,10 @@ public class WicketUtils {
 				buffer.append("type=\"").append(contentType).append("\" ");
 				buffer.append("title=\"").append(feedTitle).append("\" ");
 				buffer.append("href=\"").append(url).append("\" />");
-				response.renderString(buffer.toString());
+				response.render(new StringHeaderItem(buffer));
+				
 			}
-		});
+		};
 	}
 
 	public static PageParameters newTokenParameter(String token) {

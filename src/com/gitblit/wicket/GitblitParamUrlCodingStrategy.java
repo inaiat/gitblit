@@ -15,18 +15,6 @@
  */
 package com.gitblit.wicket;
 
-import java.text.MessageFormat;
-
-import org.apache.wicket.IRequestTarget;
-import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.request.RequestParameters;
-import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.gitblit.GitBlit;
-import com.gitblit.Keys;
 
 /**
  * Simple subclass of mixed parameter url coding strategy that works around the
@@ -38,72 +26,75 @@ import com.gitblit.Keys;
  * @author James Moger
  * 
  */
-public class GitblitParamUrlCodingStrategy extends MixedParamUrlCodingStrategy {
-
-	private Logger logger = LoggerFactory.getLogger(GitblitParamUrlCodingStrategy.class);
-
-	/**
-	 * Construct.
-	 * 
-	 * @param <C>
-	 * @param mountPath
-	 *            mount path (not empty)
-	 * @param bookmarkablePageClass
-	 *            class of mounted page (not null)
-	 * @param parameterNames
-	 *            the parameter names (not null)
-	 */
-	public <C extends Page> GitblitParamUrlCodingStrategy(String mountPath,
-			Class<C> bookmarkablePageClass, String[] parameterNames) {
-		super(mountPath, bookmarkablePageClass, parameterNames);
-	}
-
-	/**
-	 * Url encodes a string that is mean for a URL path (e.g., between slashes)
-	 * 
-	 * @param string
-	 *            string to be encoded
-	 * @return encoded string
-	 */
-	protected String urlEncodePathComponent(String string) {
-		char altChar = GitBlit.getChar(Keys.web.forwardSlashCharacter, '/');
-		if (altChar != '/') {
-			string = string.replace('/', altChar);
-		}
-		return super.urlEncodePathComponent(string);
-	}
-
-	/**
-	 * Returns a decoded value of the given value (taken from a URL path
-	 * section)
-	 * 
-	 * @param value
-	 * @return Decodes the value
-	 */
-	protected String urlDecodePathComponent(String value) {
-		char altChar = GitBlit.getChar(Keys.web.forwardSlashCharacter, '/');
-		if (altChar != '/') {
-			value = value.replace(altChar, '/');
-		}
-		return super.urlDecodePathComponent(value);
-	}
-
-	/**
-	 * Gets the decoded request target.
-	 * 
-	 * @param requestParameters
-	 *            the request parameters
-	 * @return the decoded request target
-	 */
-	@Override
-	public IRequestTarget decode(RequestParameters requestParameters) {
-		final String parametersFragment = requestParameters.getPath().substring(
-				getMountPath().length());
-		logger.debug(MessageFormat
-				.format("REQ: {0} PARAMS {1}", getMountPath(), parametersFragment));
-
-		final PageParameters parameters = new PageParameters(decodeParameters(parametersFragment,
-				requestParameters.getParameters()));
-		return super.decode(requestParameters);
-	}
-}
+//TODO Wicket 6
+// Delete this class
+public class GitblitParamUrlCodingStrategy {}
+//public class GitblitParamUrlCodingStrategy extends MixedParamUrlCodingStrategy {
+//
+//	private Logger logger = LoggerFactory.getLogger(GitblitParamUrlCodingStrategy.class);
+//
+//	/**
+//	 * Construct.
+//	 * 
+//	 * @param <C>
+//	 * @param mountPath
+//	 *            mount path (not empty)
+//	 * @param bookmarkablePageClass
+//	 *            class of mounted page (not null)
+//	 * @param parameterNames
+//	 *            the parameter names (not null)
+//	 */
+//	public <C extends Page> GitblitParamUrlCodingStrategy(String mountPath,
+//			Class<C> bookmarkablePageClass, String[] parameterNames) {
+//		super(mountPath, bookmarkablePageClass, parameterNames);
+//	}
+//
+//	/**
+//	 * Url encodes a string that is mean for a URL path (e.g., between slashes)
+//	 * 
+//	 * @param string
+//	 *            string to be encoded
+//	 * @return encoded string
+//	 */
+//	protected String urlEncodePathComponent(String string) {
+//		char altChar = GitBlit.getChar(Keys.web.forwardSlashCharacter, '/');
+//		if (altChar != '/') {
+//			string = string.replace('/', altChar);
+//		}
+//		return super.urlEncodePathComponent(string);
+//	}
+//
+//	/**
+//	 * Returns a decoded value of the given value (taken from a URL path
+//	 * section)
+//	 * 
+//	 * @param value
+//	 * @return Decodes the value
+//	 */
+//	protected String urlDecodePathComponent(String value) {
+//		char altChar = GitBlit.getChar(Keys.web.forwardSlashCharacter, '/');
+//		if (altChar != '/') {
+//			value = value.replace(altChar, '/');
+//		}
+//		return super.urlDecodePathComponent(value);
+//	}
+//
+//	/**
+//	 * Gets the decoded request target.
+//	 * 
+//	 * @param requestParameters
+//	 *            the request parameters
+//	 * @return the decoded request target
+//	 */
+//	@Override
+//	public IRequestTarget decode(RequestParameters requestParameters) {
+//		final String parametersFragment = requestParameters.getPath().substring(
+//				getMountPath().length());
+//		logger.debug(MessageFormat
+//				.format("REQ: {0} PARAMS {1}", getMountPath(), parametersFragment));
+//
+//		final PageParameters parameters = new PageParameters(decodeParameters(parametersFragment,
+//				requestParameters.getParameters()));
+//		return super.decode(requestParameters);
+//	}
+//}

@@ -67,20 +67,22 @@ public final class GitBlitWebSession extends WebSession {
 	 */
 	public void cacheRequest(Class<? extends Page> pageClass) {
 		// build absolute url with correctly encoded parameters?!
-		Request req = RequestCycle.get().getRequest();
-		IRequestParameters params = req.getRequestParameters();
-		new PageParameters(copy)
-		//PageParameters pageParams = new PageParameters(params);
-		String relativeUrl = RequestCycle.get().urlFor(pageClass, params).toString();
-		requestUrl = RequestUtils.toAbsolutePath(relativeUrl);
-		if (isTemporary())
-		{
+
+		//TODO Wicket 6 
+		// Verify to best way to todo this in wicket 6
+		
+//		Request req = RequestCycle.get().getRequest();
+//		IRequestParameters params = req.getRequestParameters();
+//		String relativeUrl = RequestCycle.get().urlFor(pageClass, params).toString();
+//		requestUrl = RequestUtils.toAbsolutePath(relativeUrl);
+//		if (isTemporary())
+//		{
 			// we must bind the temporary session into the session store
 			// so that we can re-use this session for reporting an error message
 			// on the redirected page and continuing the request after
 			// authentication.
-			bind();
-		}
+//			bind();
+//		}
 	}
 	
 	/**

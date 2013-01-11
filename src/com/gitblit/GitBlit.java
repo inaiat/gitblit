@@ -60,9 +60,9 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.protocol.http.WebResponse;
-import org.apache.wicket.resource.ContextRelativeResource;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.request.resource.ContextRelativeResource;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
@@ -683,7 +683,8 @@ public class GitBlit implements ServletContextListener {
 	 */
 	public InputStream getResourceAsStream(String file) throws ResourceStreamNotFoundException {
 		ContextRelativeResource res = WicketUtils.getResource(file);
-		return res.getResourceStream().getInputStream();
+		//TODO Wicket 6. Improve
+		return res.getCacheableResourceStream().getInputStream();
 	}
 
 	/**
