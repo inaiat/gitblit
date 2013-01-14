@@ -188,8 +188,8 @@ public abstract class RootPage extends BasePage {
 				params.remove("user");
 
 				// remove days back parameter if it is the default value
-				if (params.containsKey("db")
-						&& params.getInt("db") == GitBlit.getInteger(Keys.web.activityDuration, 14)) {
+				if ((!params.get("db").isEmpty())
+						&& params.get("db").toInt()  == GitBlit.getInteger(Keys.web.activityDuration, 14)) {
 					params.remove("db");
 				}
 				return params;
@@ -340,7 +340,7 @@ public abstract class RootPage extends BasePage {
 		String set = WicketUtils.getSet(params);
 		String regex = WicketUtils.getRegEx(params);
 		String team = WicketUtils.getTeam(params);
-		int daysBack = params.getInt("db", 0);
+		int daysBack = params.get("db").toInt(0);
 
 		List<RepositoryModel> availableModels = getRepositoryModels();
 		Set<RepositoryModel> models = new HashSet<RepositoryModel>();

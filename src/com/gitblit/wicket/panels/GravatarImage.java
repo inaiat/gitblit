@@ -17,7 +17,7 @@ package com.gitblit.wicket.panels;
 
 import java.text.MessageFormat;
 
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -56,7 +56,7 @@ public class GravatarImage extends Panel {
 		String hash = StringUtils.getMD5(email);
 		Link<Void> link = new BookmarkablePageLink<Void>("link", GravatarProfilePage.class,
 				WicketUtils.newObjectParameter(hash));
-		link.add(new SimpleAttributeModifier("target", "_blank"));
+		link.add(new AttributeModifier("target", "_blank"));
 		String url = ActivityUtils.getGravatarThumbnailUrl(email, width);
 		ExternalImage image = new ExternalImage("image", url);
 		WicketUtils.setCssClass(image, "gravatar");

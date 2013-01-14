@@ -15,8 +15,7 @@
  */
 package com.gitblit.wicket.panels;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -25,6 +24,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.utils.StringUtils;
 import com.gitblit.wicket.WicketUtils;
@@ -71,10 +71,10 @@ public class LinkPanel extends Panel {
 			link = new BookmarkablePageLink<Void>("link", clazz, parameters);
 		}
 		if (newWindow) {
-			link.add(new SimpleAttributeModifier("target", "_blank"));
+			link.add(new AttributeModifier("target", "_blank"));
 		}
 		if (linkCssClass != null) {
-			link.add(new SimpleAttributeModifier("class", linkCssClass));
+			link.add(new AttributeModifier("class", linkCssClass));
 		}
 		Label icon = new Label("icon");
 		if (StringUtils.isEmpty(bootstrapIcon)) {
@@ -97,10 +97,10 @@ public class LinkPanel extends Panel {
 		this.labelModel = new Model<String>(label);
 		ExternalLink link = new ExternalLink("link", href);
 		if (newWindow) {
-			link.add(new SimpleAttributeModifier("target", "_blank"));
+			link.add(new AttributeModifier("target", "_blank"));
 		}
 		if (linkCssClass != null) {
-			link.add(new SimpleAttributeModifier("class", linkCssClass));
+			link.add(new AttributeModifier("class", linkCssClass));
 		}
 		link.add(new Label("icon").setVisible(false));
 		link.add(new Label("label", labelModel));
