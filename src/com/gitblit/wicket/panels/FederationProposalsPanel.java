@@ -19,8 +19,8 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
@@ -61,12 +61,13 @@ public class FederationProposalsPanel extends BasePanel {
 				item.add(new LinkPanel("token", "list", entry.token, ReviewProposalPage.class,
 						WicketUtils.newTokenParameter(entry.token)));
 
-				Link<Void> deleteLink = new Link<Void>("deleteProposal") {
+				ConfirmationLink<Void> deleteLink = new ConfirmationLink<Void>("deleteProposal", MessageFormat.format(
+						"Delete proposal \"{0}\"?", entry.name)) {
 
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public void onClick() {
+					public void onClick(AjaxRequestTarget target) {
 						if (GitBlit.self().deletePendingFederationProposal(entry)) {
 							list.remove(entry);
 							info(MessageFormat.format("Proposal ''{0}'' deleted.", entry.name));
@@ -74,10 +75,9 @@ public class FederationProposalsPanel extends BasePanel {
 							error(MessageFormat.format("Failed to delete proposal ''{0}''!",
 									entry.name));
 						}
+						
 					}
 				};
-				deleteLink.add(new JavascriptEventConfirmation("onclick", MessageFormat.format(
-						"Delete proposal \"{0}\"?", entry.name)));
 				item.add(deleteLink);
 				WicketUtils.setAlternatingBackground(item, counter);
 				counter++;

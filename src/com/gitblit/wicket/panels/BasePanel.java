@@ -18,10 +18,11 @@ package com.gitblit.wicket.panels;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.attributes.AjaxCallListener;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 
 import com.gitblit.Constants;
 import com.gitblit.GitBlit;
@@ -65,41 +66,63 @@ public abstract class BasePanel extends Panel {
 			WicketUtils.setHtmlTooltip(component, getString("gb.searchForCommitter") + " " + value);
 		}
 	}
-
-	public static class JavascriptEventConfirmation extends AttributeModifier {
-
+	
+	public abstract class ConfirmationLink<T> extends AjaxLink<T>
+	{
 		private static final long serialVersionUID = 1L;
+		private final String msg;
 
-		public JavascriptEventConfirmation(String event, String msg) {
-			super(event, true, new Model<String>(msg));
+		public ConfirmationLink( String id, String msg )
+		{
+			super( id );
+			this.msg = msg;
 		}
 
-		protected String newValue(final String currentValue, final String replacementValue) {
-			String prefix = "var conf = confirm('" + replacementValue + "'); "
-					+ "if (!conf) return false; ";
-			String result = prefix;
-			if (currentValue != null) {
-				result = prefix + currentValue;
-			}
-			return result;
+		@Override
+		protected void updateAjaxAttributes( AjaxRequestAttributes attributes )
+		{
+			super.updateAjaxAttributes( attributes );
+
+			AjaxCallListener ajaxCallListener = new AjaxCallListener();
+			ajaxCallListener.onPrecondition( "return confirm('" + msg + "');" );
+			attributes.getAjaxCallListeners().add( ajaxCallListener );
 		}
 	}
 
-	public static class JavascriptTextPrompt extends AttributeModifier {
+//	public static class JavascriptEventConfirmation extends AttributeModifier {
+//
+//		private static final long serialVersionUID = 1L;
+//
+//		public JavascriptEventConfirmation(String event, String msg) {
+//			super(event, true, new Model<String>(msg));
+//		}
+//
+//		protected String newValue(final String currentValue, final String replacementValue) {
+//			String prefix = "var conf = confirm('" + replacementValue + "'); "
+//					+ "if (!conf) return false; ";
+//			String result = prefix;
+//			if (currentValue != null) {
+//				result = prefix + currentValue;
+//			}
+//			return result;
+//		}
+//	}
 
-		private static final long serialVersionUID = 1L;
-
-		private String initialValue = "";
-		
-		public JavascriptTextPrompt(String event, String msg, String value) {
-			super(event, true, new Model<String>(msg));
-			initialValue = value;
-		}
-
-		protected String newValue(final String currentValue, final String message) {
-			String result = "var userText = prompt('" + message + "','"
-					+ (initialValue == null ? "" : initialValue) + "'); " + "return userText; ";
-			return result;
-		}
-	}
+//	public static class JavascriptTextPrompt extends AttributeModifier {
+//
+//		private static final long serialVersionUID = 1L;
+//
+//		private String initialValue = "";
+//		
+//		public JavascriptTextPrompt(String event, String msg, String value) {
+//			super(event, true, new Model<String>(msg));
+//			initialValue = value;
+//		}
+//
+//		protected String newValue(final String currentValue, final String message) {
+//			String result = "var userText = prompt('" + message + "','"
+//					+ (initialValue == null ? "" : initialValue) + "'); " + "return userText; ";
+//			return result;
+//		}
+//	}
 }

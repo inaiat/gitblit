@@ -166,7 +166,7 @@ public class PagesServlet extends HttpServlet {
 					if (contentType == null) {
 						contentType = "text/plain";
 					}
-					if (contentType.startsWith("text")) {
+					if (contentType.startsWith("msg")) {
 						content = JGitUtils.getStringContent(r, tree, resource, encodings).getBytes(
 								Constants.ENCODING);
 					} else {

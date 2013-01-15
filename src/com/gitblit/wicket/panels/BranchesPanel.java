@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -138,8 +139,11 @@ public class BranchesPanel extends BasePanel {
 							.newObjectParameter(model.name, entry.getName())));
 					fragment.add(new BookmarkablePageLink<Void>("metrics", MetricsPage.class,
 							WicketUtils.newObjectParameter(model.name, entry.getName())));
+					
+					//TODO Wicket 6
+					// was getRequest().getRelativePathPrefixToContextRoot()
 					fragment.add(new ExternalLink("syndication", SyndicationServlet.asLink(
-							getRequest().getRelativePathPrefixToContextRoot(), model.name,
+							getRequest().getPrefixToContextPath(), model.name,
 							entry.getName(), 0)));
 					if (showDelete) {
 						fragment.add(createDeleteBranchLink(model, entry));
@@ -175,13 +179,14 @@ public class BranchesPanel extends BasePanel {
 		return this;
 	}
 
-	private Link<Void> createDeleteBranchLink(final RepositoryModel repositoryModel, final RefModel entry)
+	private AbstractLink createDeleteBranchLink(final RepositoryModel repositoryModel, final RefModel entry)
 	{
-		Link<Void> deleteLink = new Link<Void>("deleteBranch") {
+		return new ConfirmationLink<Void>("deleteBranch", MessageFormat.format(
+				"Delete branch \"{0}\"?", entry.displayName)) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void onClick() {
+			public void onClick(AjaxRequestTarget target) {
 				Repository r = GitBlit.self().getRepository(repositoryModel.name);
 				if (r == null) {
 					if (GitBlit.self().isCollectingGarbage(repositoryModel.name)) {
@@ -202,10 +207,7 @@ public class BranchesPanel extends BasePanel {
 					error(MessageFormat.format("Failed to delete branch \"{0}\"", entry.displayName));
 				}
 			}
+	
 		};
-		
-		deleteLink.add(new JavascriptEventConfirmation("onclick", MessageFormat.format(
-				"Delete branch \"{0}\"?", entry.displayName )));
-		return deleteLink;
 	}
 }
