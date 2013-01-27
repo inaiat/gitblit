@@ -19,8 +19,10 @@ package com.gitblit.wicket.charting;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
-import org.apache.wicket.markup.html.IHeaderContributor;
 
 /**
  * The Google Visualization API provides interactive JavaScript based charts and
@@ -30,7 +32,7 @@ import org.apache.wicket.markup.html.IHeaderContributor;
  * @author James Moger
  * 
  */
-public class GoogleCharts implements IHeaderContributor {
+public class GoogleCharts extends Behavior {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,9 +42,8 @@ public class GoogleCharts implements IHeaderContributor {
 		charts.add(chart);
 	}
 	
-
 	@Override
-	public void renderHead(org.apache.wicket.markup.head.IHeaderResponse response) {
+	public void renderHead(Component component, IHeaderResponse response) {
 		// prepare draw chart function
 		StringBuilder sb = new StringBuilder();
 		line(sb, "google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});");
@@ -61,8 +62,9 @@ public class GoogleCharts implements IHeaderContributor {
 		response.render(JavaScriptHeaderItem.forUrl("https://www.google.com/jsapi"));
 		// add Google script
 		response.render(JavaScriptHeaderItem.forScript(sb, null));
-		
+		super.renderHead(component, response);
 	}
+
 
 	private void line(StringBuilder sb, String line) {
 		sb.append(line);

@@ -22,12 +22,13 @@ import java.util.Map;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Localizer;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.Constants.AccessRestrictionType;
 import com.gitblit.GitBlit;
@@ -148,12 +149,13 @@ public class ProjectRepositoryPanel extends BasePanel {
 			repositoryLinks.add(new BookmarkablePageLink<Void>("editRepository", EditRepositoryPage.class,
 					WicketUtils.newRepositoryParameter(entry.name)));
 			if (showAdmin) {
-				Link<Void> deleteLink = new Link<Void>("deleteRepository") {
-
+				
+				AjaxLink<Void> deleteLink = new ConfirmationLink<Void>("deleteRepository",MessageFormat.format(
+						localizer.getString("gb.deleteRepository", parent), entry)) {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public void onClick() {
+					public void onClick(AjaxRequestTarget target) {
 						if (GitBlit.self().deleteRepositoryModel(entry)) {
 							// redirect to the owning page
 							if (entry.isPersonalRepository()) {
@@ -163,11 +165,9 @@ public class ProjectRepositoryPanel extends BasePanel {
 							}
 						} else {
 							error(MessageFormat.format(getString("gb.repositoryDeleteFailed"), entry));
-						}
+						}						
 					}
 				};
-				deleteLink.add(new JavascriptEventConfirmation("onclick", MessageFormat.format(
-						localizer.getString("gb.deleteRepository", parent), entry)));
 				repositoryLinks.add(deleteLink);
 			}
 		} else {

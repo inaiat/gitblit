@@ -18,9 +18,9 @@ package com.gitblit.wicket.pages;
 import java.io.IOException;
 import java.text.MessageFormat;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.models.GravatarProfile;
 import com.gitblit.utils.ActivityUtils;

@@ -27,13 +27,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.GitBlit;
 import com.gitblit.Keys;
@@ -173,7 +172,7 @@ public class ProjectPage extends RootPage {
 
 			// create the activity charts
 			GoogleCharts charts = createCharts(recentActivity);
-			add(new HeaderContributor(charts));
+			add(charts);
 
 			// add activity panel
 			add(new ActivityPanel("activityPanel", recentActivity));

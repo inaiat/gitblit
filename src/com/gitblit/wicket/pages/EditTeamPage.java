@@ -23,8 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -35,11 +34,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+import com.gitblit.Constants.RegistrantType;
 import com.gitblit.GitBlit;
 import com.gitblit.GitBlitException;
 import com.gitblit.Keys;
-import com.gitblit.Constants.RegistrantType;
 import com.gitblit.models.RegistrantAccessPermission;
 import com.gitblit.models.TeamModel;
 import com.gitblit.utils.StringUtils;
@@ -197,7 +197,8 @@ public class EditTeamPage extends RootSubPage {
 					error(e.getMessage());
 					return;
 				}
-				setRedirect(false);
+				//TODO Wicket 6 setRedirect false 
+				//setRedirect(false);
 				if (isCreate) {
 					// create another team
 					info(MessageFormat.format(getString("gb.teamCreated"),
@@ -209,7 +210,7 @@ public class EditTeamPage extends RootSubPage {
 		};
 
 		// do not let the browser pre-populate these fields
-		form.add(new SimpleAttributeModifier("autocomplete", "off"));
+		form.add(new AttributeModifier("autocomplete", "off"));
 
 		// not all user services support manipulating team memberships
 		boolean editMemberships = GitBlit.self().supportsTeamMembershipChanges();

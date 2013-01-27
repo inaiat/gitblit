@@ -16,7 +16,7 @@
 package com.gitblit.wicket.pages;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.http.WebResponse;
 
 import com.gitblit.GitBlit;
 import com.gitblit.models.UserModel;
@@ -30,7 +30,8 @@ public class LogoutPage extends WebPage {
 		GitBlit.self().setCookie((WebResponse) getResponse(), null);
 		GitBlit.self().logout(user);
 		session.invalidate();		
-		setRedirect(true);
+		//TODO Wicket 6 setRedirect(false);
+		//setRedirect(true);
 		setResponsePage(getApplication().getHomePage());
 	}
 }

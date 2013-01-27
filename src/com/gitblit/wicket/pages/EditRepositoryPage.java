@@ -26,11 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -48,6 +47,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.Constants;
 import com.gitblit.Constants.AccessRestrictionType;
@@ -366,13 +366,14 @@ public class EditRepositoryPage extends RootSubPage {
 					error(e.getMessage());
 					return;
 				}
-				setRedirect(false);
+				//TODO Wicket 6 Verify
+				//setRedirect(false);
 				setResponsePage(RepositoriesPage.class);
 			}
 		};
 
 		// do not let the browser pre-populate these fields
-		form.add(new SimpleAttributeModifier("autocomplete", "off"));
+		form.add(new AttributeModifier("autocomplete", "off"));
 
 		// field names reflective match RepositoryModel fields
 		form.add(new TextField<String>("name").setEnabled(allowEditName));
@@ -481,10 +482,10 @@ public class EditRepositoryPage extends RootSubPage {
 					repositoryModel.authorizationControl = AuthorizationControl.NAMED;
 				}
 				
-				target.addComponent(authorizationControl);
-				target.addComponent(verifyCommitter);
-				target.addComponent(usersPalette);
-				target.addComponent(teamsPalette);
+				target.add(authorizationControl);
+				target.add(verifyCommitter);
+				target.add(usersPalette);
+				target.add(teamsPalette);
 			}
 		});
 		
@@ -505,9 +506,9 @@ public class EditRepositoryPage extends RootSubPage {
 					repositoryModel.authorizationControl = AuthorizationControl.NAMED;
 				}
 				
-				target.addComponent(authorizationControl);
-				target.addComponent(usersPalette);
-				target.addComponent(teamsPalette);
+				target.add(authorizationControl);
+				target.add(usersPalette);
+				target.add(teamsPalette);
 			}
 		});
 		

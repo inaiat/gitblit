@@ -24,7 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.head.HeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
+import org.apache.wicket.request.Response;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.GitBlit;
@@ -90,12 +96,20 @@ public class ActivityPage extends RootPage {
 
 			// create the activity charts
 			GoogleCharts charts = createCharts(recentActivity);
-			add(new HeaderContributor(charts));
+			add(charts);
 
 			// add activity panel
 			add(new ActivityPanel("activityPanel", recentActivity));
 		}
 	}
+	
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		super.renderHead(response);
+		
+		
+	}
+	
 
 	@Override
 	protected boolean reusePageParameters() {
@@ -109,8 +123,8 @@ public class ActivityPage extends RootPage {
 
 		PageParameters currentParameters = getPageParameters();
 		int daysBack = GitBlit.getInteger(Keys.web.activityDuration, 14);
-		if (currentParameters != null && !currentParameters.containsKey("db")) {
-			currentParameters.put("db", daysBack);
+		if (currentParameters != null && currentParameters.get("db").isEmpty()) {
+			currentParameters.add("db", daysBack);
 		}
 
 		// preserve time filter options on repository choices

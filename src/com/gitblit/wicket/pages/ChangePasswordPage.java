@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.http.WebResponse;
 
 import com.gitblit.GitBlit;
 import com.gitblit.GitBlitException;
@@ -106,7 +106,8 @@ public class ChangePasswordPage extends RootSubPage {
 					error(e.getMessage());
 					return;
 				}
-				setRedirect(false);
+				//TODO Verify
+				//setRedirect(false);
 				info(getString("gb.passwordChanged"));
 				setResponsePage(RepositoriesPage.class);
 			}
@@ -125,7 +126,8 @@ public class ChangePasswordPage extends RootSubPage {
 
 			@Override
 			public void onSubmit() {
-				setRedirect(false);
+				//TODO Verify
+				//setRedirect(false);
 				error(getString("gb.passwordChangeAborted"));
 				setResponsePage(RepositoriesPage.class);
 			}
