@@ -60,6 +60,8 @@ import com.gitblit.wicket.panels.NavigationPanel;
  */
 public abstract class RootPage extends BasePage {
 
+	private static final long serialVersionUID = 6563440302445728918L;
+
 	boolean showAdmin;
 
 	IModel<String> username = new Model<String>("");

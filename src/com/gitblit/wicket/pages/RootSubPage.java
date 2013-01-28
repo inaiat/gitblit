@@ -18,6 +18,7 @@ package com.gitblit.wicket.pages;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -36,6 +37,8 @@ import com.gitblit.utils.StringUtils;
  * 
  */
 public abstract class RootSubPage extends RootPage {
+
+	private static final long serialVersionUID = -813808880347612641L;
 
 	public RootSubPage() {
 		super();
@@ -57,7 +60,8 @@ public abstract class RootSubPage extends RootPage {
 			// Wicket seems to get confused as to when it really should
 			// generate a page map for complex pages.  Conditionally ensure we
 			// have a page map for complex AJAX pages like the EditNNN pages.
-			Session.get().pageMapForName(null, true);
+			// TODO Wicket 6. Verify Session.get().pageMapForName in Wicket 6
+			//Session.get().pageMapForName(null, true);		
 			setVersioned(true);
 		}
 	}

@@ -178,7 +178,7 @@ public class SummaryPage extends RepositoryPage {
 				markdownText = MessageFormat.format("<div class=\"alert alert-error\"><strong>{0}:</strong> {1}</div>{2}", getString("gb.error"), getString("gb.markdownFailure"), markdownText);
 				htmlText = StringUtils.breakLinesForHtml(markdownText);
 			}
-			Fragment fragment = new Fragment("readme", "markdownPanel");
+			Fragment fragment = new Fragment("readme", "markdownPanel",this);
 			fragment.add(new Label("readmeFile", readme));
 			// Add the html to the page
 			Component content = new Label("readmeContent", htmlText).setEscapeModelStrings(false);

@@ -18,6 +18,7 @@ package com.gitblit.wicket.panels;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
@@ -67,12 +68,13 @@ public class TeamsPanel extends BasePanel {
 				Fragment teamLinks = new Fragment("teamLinks", "teamAdminLinks", this);
 				teamLinks.add(new BookmarkablePageLink<Void>("editTeam", EditTeamPage.class,
 						WicketUtils.newTeamnameParameter(entry.name)));
-				Link<Void> deleteLink = new Link<Void>("deleteTeam") {
+				ConfirmationLink<Void> deleteLink = new ConfirmationLink<Void>("deleteTeam",
+						MessageFormat.format(
+								"Delete team \"{0}\"?", entry.name)) {
 
 					private static final long serialVersionUID = 1L;
-
 					@Override
-					public void onClick() {
+					public void onClick(AjaxRequestTarget art) {
 						if (GitBlit.self().deleteTeam(entry.name)) {
 							teams.remove(entry);
 							info(MessageFormat.format("Team ''{0}'' deleted.", entry.name));
@@ -80,10 +82,10 @@ public class TeamsPanel extends BasePanel {
 							error(MessageFormat
 									.format("Failed to delete team ''{0}''!", entry.name));
 						}
+						
 					}
 				};
-				deleteLink.add(new JavascriptEventConfirmation("onclick", MessageFormat.format(
-						"Delete team \"{0}\"?", entry.name)));
+				
 				teamLinks.add(deleteLink);
 				item.add(teamLinks);
 

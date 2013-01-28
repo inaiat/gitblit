@@ -35,7 +35,10 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.RequestUtils;
+import org.apache.wicket.request.Url;
 import org.apache.wicket.request.UrlUtils;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.handler.RedirectRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.lib.PersonIdent;
@@ -595,10 +598,10 @@ public abstract class RepositoryPage extends BasePage {
 			}
 			// use an absolute url to workaround Wicket-Tomcat problems with
 			// mounted url parameters (issue-111)
-			PageParameters params = WicketUtils.newSearchParameter(repositoryName, null, searchString, searchType);
-			String relativeUrl = urlFor(searchPageClass, params).toString();
-			String absoluteUrl = RequestUtils.toAbsolutePath(relativeUrl);
-			getRequestCycle().setRequestTarget(new RedirectRequestTarget(absoluteUrl));
+			PageParameters params = WicketUtils.newSearchParameter(repositoryName, null, searchString, searchType);			
+			String absoluteUrl = RequestCycle.get().getUrlRenderer().renderFullUrl(
+					   Url.parse(urlFor(searchPageClass,params).toString()));				
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(new RedirectRequestHandler(absoluteUrl));
 		}
 	}
 }

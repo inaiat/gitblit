@@ -15,7 +15,6 @@
  */
 package com.gitblit.wicket;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;

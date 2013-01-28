@@ -18,6 +18,7 @@ package com.gitblit.wicket.panels;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
@@ -88,23 +89,23 @@ public class UsersPanel extends BasePanel {
 				Fragment userLinks = new Fragment("userLinks", "userAdminLinks", this);
 				userLinks.add(new BookmarkablePageLink<Void>("editUser", EditUserPage.class,
 						WicketUtils.newUsernameParameter(entry.username)));
-				Link<Void> deleteLink = new Link<Void>("deleteUser") {
+				ConfirmationLink<Void> deleteLink = new ConfirmationLink<Void>("deleteUser",
+						MessageFormat.format(
+								getString("gb.deleteUser"), entry.username)) {
 
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public void onClick() {
+					public void onClick(AjaxRequestTarget arg0) {
 						if (GitBlit.self().deleteUser(entry.username)) {
 							users.remove(entry);
 							info(MessageFormat.format(getString("gb.userDeleted"), entry.username));
 						} else {
 							error(MessageFormat.format(getString("gb.deleteUserFailed"),
 									entry.username));
-						}
+						}						
 					}
-				};
-				deleteLink.add(new JavascriptEventConfirmation("onclick", MessageFormat.format(
-						getString("gb.deleteUser"), entry.username)));
+				};				
 				userLinks.add(deleteLink);
 				item.add(userLinks);
 

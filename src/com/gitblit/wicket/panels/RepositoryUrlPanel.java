@@ -41,6 +41,7 @@ public class RepositoryUrlPanel extends BasePanel {
 			add(fragment);
 		} else {
 			// javascript: manual copy & paste with modal browser prompt dialog
+			//TODO Wicket 6. Need tests.			
 			Fragment fragment = new Fragment("copyFunction", "jsPanel", this);
 			ContextImage img = WicketUtils.newImage("copyIcon", "clippy.png");
 			img.add(new JavascriptTextPrompt("onclick", "Copy to Clipboard (Ctrl+C, Enter)", url));

@@ -20,7 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.IRequestCycle;
+import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.eclipse.jgit.lib.Repository;
@@ -41,18 +42,16 @@ public class RawPage extends WebPage {
 	public RawPage(final PageParameters params) {
 		super(params);
 
-		if (!params.containsKey("r")) {
+		if (params.get("r").isEmpty()) {
 			error(getString("gb.repositoryNotSpecified"));
 			redirectToInterceptPage(new RepositoriesPage());
 		}
-
-		getRequestCycle().setRequestTarget(new IRequestTarget() {
-			@Override
-			public void detach(RequestCycle requestCycle) {
-			}
+		
+		
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(new IRequestHandler() {			
 
 			@Override
-			public void respond(RequestCycle requestCycle) {
+			public void respond(IRequestCycle requestCycle) {
 				WebResponse response = (WebResponse) requestCycle.getResponse();
 
 				final String repositoryName = WicketUtils.getRepositoryName(params);
@@ -155,6 +154,13 @@ public class RawPage extends WebPage {
 				}
 				r.close();
 			}
-		});
+
+			@Override
+			public void detach(IRequestCycle requestCycle) {
+				// TODO Auto-generated method stub
+				
+			}
+		} );	
+
 	}
 }

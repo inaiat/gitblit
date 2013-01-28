@@ -210,7 +210,7 @@ public class ProjectsPage extends RootPage {
 			InputStreamReader reader = null;
 			try {
 				ContextRelativeResource res = WicketUtils.getResource(name);
-				InputStream is = res.getResourceStream().getInputStream();
+				InputStream is = res.getCacheableResourceStream().getInputStream();
 				reader = new InputStreamReader(is, Constants.CHARACTER_ENCODING);
 				message = MarkdownUtils.transformMarkdown(reader);
 				reader.close();

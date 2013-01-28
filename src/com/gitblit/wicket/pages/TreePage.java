@@ -55,8 +55,10 @@ public class TreePage extends RepositoryPage {
 				WicketUtils.newPathParameter(repositoryName, objectId, path)));
 		add(new BookmarkablePageLink<Void>("headLink", TreePage.class,
 				WicketUtils.newPathParameter(repositoryName, Constants.HEAD, path)));
+		//TODO Wicket 6 Check getRequest().getRelativePathPrefixToContextRoot()
+		// equals .getPrefixToContextPath()?
 		add(new CompressedDownloadsPanel("compressedLinks", getRequest()
-				.getRelativePathPrefixToContextRoot(), repositoryName, objectId, path));
+				.getPrefixToContextPath(), repositoryName, objectId, path));
 
 		add(new CommitHeaderPanel("commitHeader", repositoryName, commit));
 

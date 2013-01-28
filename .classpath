@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="ext/javax.servlet-api-3.0.1.jar" sourcepath="ext/src/javax.servlet-api-3.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="ext/jetty-webapp-7.6.8.v20121106.jar" sourcepath="ext/src/jetty-webapp-7.6.8.v20121106-sources.jar"/>
 	<classpathentry kind="lib" path="ext/jetty-ajp-7.6.8.v20121106.jar" sourcepath="ext/src/jetty-ajp-7.6.8.v20121106-sources.jar"/>
-	<classpathentry kind="lib" path="ext/googlecharts-1.4.21.jar" sourcepath="ext/src/googlecharts-1.4.21-sources.jar"/>
 	<classpathentry kind="lib" path="ext/lucene-core-3.6.1.jar" sourcepath="ext/src/lucene-core-3.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="ext/lucene-highlighter-3.6.1.jar" sourcepath="ext/src/lucene-highlighter-3.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="ext/lucene-memory-3.6.1.jar" sourcepath="ext/src/lucene-memory-3.6.1-sources.jar"/>
@@ -36,9 +35,11 @@
 	<classpathentry kind="lib" path="ext/junit-4.10.jar" sourcepath="ext/src/junit-4.10-sources.jar"/>
 	<classpathentry kind="lib" path="ext/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="ext/wicket-core-6.4.0.jar" sourcepath="/home/inaiat/dev/lib/apache-wicket-6.4.0/wicket-core"/>
-	<classpathentry kind="lib" path="ext/wicket-extensions-6.4.0.jar"/>
-	<classpathentry kind="lib" path="ext/wicket-request-6.4.0.jar" sourcepath="/home/inaiat/dev/lib/apache-wicket-6.4.0/wicket-request"/>
-	<classpathentry kind="lib" path="ext/wicket-util-6.4.0.jar" sourcepath="/home/inaiat/dev/lib/apache-wicket-6.4.0/wicket-util"/>
+	<classpathentry kind="lib" path="ext/wicket-core-6.5.0.jar" sourcepath="C:/Users/inaiat/dev/libs/apache-wicket-6.5.0/wicket-core/src"/>
+	<classpathentry kind="lib" path="ext/wicket-extensions-6.5.0.jar"/>
+	<classpathentry kind="lib" path="ext/wicket-request-6.5.0.jar" sourcepath="C:/Users/inaiat/dev/libs/apache-wicket-6.5.0/wicket-request/src"/>
+	<classpathentry kind="lib" path="ext/wicket-util-6.5.0.jar" sourcepath="C:/Users/inaiat/dev/libs/apache-wicket-6.5.0/wicket-util/src"/>
+	<classpathentry kind="lib" path="ext/wicket-auth-roles-6.5.0.jar"/>
+	<classpathentry kind="lib" path="ext/wicketstuff-googlecharts-6.4.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

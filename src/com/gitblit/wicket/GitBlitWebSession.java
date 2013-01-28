@@ -69,7 +69,7 @@ public final class GitBlitWebSession extends WebSession {
 		// build absolute url with correctly encoded parameters?!
 
 		//TODO Wicket 6 
-		// Verify to best way to todo this in wicket 6
+		// Verify best way to todo this in wicket 6
 		
 //		Request req = RequestCycle.get().getRequest();
 //		IRequestParameters params = req.getRequestParameters();

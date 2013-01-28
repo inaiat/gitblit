@@ -26,8 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
@@ -41,6 +42,7 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.Constants.AccessRestrictionType;
 import com.gitblit.GitBlit;
@@ -314,12 +316,13 @@ public class RepositoriesPanel extends BasePanel {
 					repositoryLinks.add(new BookmarkablePageLink<Void>("editRepository",
 							EditRepositoryPage.class, WicketUtils
 									.newRepositoryParameter(entry.name)));
-					Link<Void> deleteLink = new Link<Void>("deleteRepository") {
+					ConfirmationLink<Void> deleteLink = new ConfirmationLink<Void>("deleteRepository",
+							MessageFormat.format(getString("gb.deleteRepository"), entry)) {
 
 						private static final long serialVersionUID = 1L;
 
 						@Override
-						public void onClick() {
+						public void onClick(AjaxRequestTarget art) {
 							if (GitBlit.self().deleteRepositoryModel(entry)) {
 								if (dp instanceof SortableRepositoriesProvider) {
 									info(MessageFormat.format(getString("gb.repositoryDeleted"), entry));
@@ -330,10 +333,10 @@ public class RepositoriesPanel extends BasePanel {
 							} else {
 								error(MessageFormat.format(getString("gb.repositoryDeleteFailed"), entry));
 							}
+							
 						}
-					};
-					deleteLink.add(new JavascriptEventConfirmation("onclick", MessageFormat.format(
-							getString("gb.deleteRepository"), entry)));
+					};					
+					
 					repositoryLinks.add(deleteLink);
 					row.add(repositoryLinks);
 				} else if (showOwner) {
@@ -354,9 +357,9 @@ public class RepositoriesPanel extends BasePanel {
 		};
 		add(dataView);
 
-		if (dp instanceof SortableDataProvider<?>) {
+		if (dp instanceof SortableDataProvider<?,?>) {
 			// add sortable header
-			SortableDataProvider<?> sdp = (SortableDataProvider<?>) dp;
+			SortableDataProvider<?,?> sdp = (SortableDataProvider<?,?>) dp;
 			Fragment fragment = new Fragment("headerContent", "flatRepositoryHeader", this);
 			fragment.add(newSort("orderByRepository", SortBy.repository, sdp, dataView));
 			fragment.add(newSort("orderByDescription", SortBy.description, sdp, dataView));
@@ -392,7 +395,7 @@ public class RepositoriesPanel extends BasePanel {
 		repository, description, owner, date;
 	}
 
-	protected OrderByBorder newSort(String wicketId, SortBy field, SortableDataProvider<?> dp,
+	protected OrderByBorder newSort(String wicketId, SortBy field, SortableDataProvider<?,?> dp,
 			final DataView<?> dataView) {
 		return new OrderByBorder(wicketId, field.name(), dp) {
 			private static final long serialVersionUID = 1L;
@@ -457,7 +460,7 @@ public class RepositoriesPanel extends BasePanel {
 		}
 	}
 
-	private static class SortableRepositoriesProvider extends SortableDataProvider<RepositoryModel> {
+	private static class SortableRepositoriesProvider extends SortableDataProvider<RepositoryModel, String> {
 
 		private static final long serialVersionUID = 1L;
 
@@ -465,7 +468,7 @@ public class RepositoriesPanel extends BasePanel {
 
 		protected SortableRepositoriesProvider(List<RepositoryModel> list) {
 			this.list = list;
-			setSort(SortBy.date.name(), false);
+			setSort(SortBy.date.name(), SortOrder.DESCENDING);
 		}
 
 		public void remove(RepositoryModel model) {
@@ -473,7 +476,7 @@ public class RepositoriesPanel extends BasePanel {
 		}
 
 		@Override
-		public int size() {
+		public long size() {
 			if (list == null) {
 				return 0;
 			}
@@ -486,8 +489,8 @@ public class RepositoriesPanel extends BasePanel {
 		}
 
 		@Override
-		public Iterator<RepositoryModel> iterator(int first, int count) {
-			SortParam sp = getSort();
+		public Iterator<RepositoryModel> iterator(long first, long count) {
+			SortParam<String> sp = getSort();
 			String prop = sp.getProperty();
 			final boolean asc = sp.isAscending();
 
@@ -532,7 +535,7 @@ public class RepositoriesPanel extends BasePanel {
 					}
 				});
 			}
-			return list.subList(first, first + count).iterator();
+			return list.subList(Long.valueOf(first).intValue() , Long.valueOf(first).intValue() + Long.valueOf(count).intValue()).iterator();
 		}
 	}
 }

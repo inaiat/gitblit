@@ -607,28 +607,28 @@ public class Build {
 				"c10c20168206896442f3192d5417815df7fcbf9a");
 
 		public static final MavenObject WICKET = new MavenObject(
-                "Apache Wicket", "org/apache/wicket", "wicket", "1.4.21",
+                "Apache Wicket", "org/apache/wicket", "wicket-core", "6.5.0",
                 1960000, 1906000, 6818000,
 				"cce9dfd3088e18a3cdcf9be33b5b76caa48dc4c6",
 				"e8c2bfe2c96a2da7a0eca947a2f60dc3242e7229",
 				"");
 
 		public static final MavenObject WICKET_EXT = new MavenObject(
-                "Apache Wicket Extensions", "org/apache/wicket", "wicket-extensions", "1.4.21",
+                "Apache Wicket Extensions", "org/apache/wicket", "wicket-extensions", "6.5.0",
                 1180000, 1118000, 1458000,
 				"fac510c7ee4399a29b927405ec3de40b67d105d8",
 				"ee3409ce9ed64ad8cc8d69abbd7d63f07e10851a",
 				"");
 
 		public static final MavenObject WICKET_AUTH_ROLES = new MavenObject(
-				"Apache Wicket Auth Roles", "org/apache/wicket", "wicket-auth-roles", "1.4.21",
+				"Apache Wicket Auth Roles", "org/apache/wicket", "wicket-auth-roles", "6.5.0",
 				44000, 45000, 166000,
                 "e78df70ca942e2e15287c393f236b32fbe6f9a30",
 				"47c301212cce43a70caa72f41a9a1aefcf26a533",
 				"");
 
 		public static final MavenObject WICKET_GOOGLE_CHARTS = new MavenObject(
-				"Apache Wicket Google Charts Add-On", "org/wicketstuff", "googlecharts", "1.4.21",
+				"Apache Wicket Google Charts Add-On", "org/wicketstuff", "wicketstuff-googlecharts", "6.4.0",
 				34000, 18750, 161000,
                 "73d7540267afc3a0e91ca6148d3073e050dba180",
 				"627b125cc6029d4d5c59c3a910c1bef347384d97",

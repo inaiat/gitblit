@@ -28,7 +28,7 @@ import org.apache.wicket.protocol.http.ClientProperties;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.protocol.http.request.WebClientInfo;
 import org.apache.wicket.request.Response;
-import org.apache.wicket.request.resource.ResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.value.IValueMap;
 
 /**
@@ -84,8 +84,9 @@ public abstract class ObjectContainer extends WebMarkupContainer {
 			parent = parent.getParent();
 		}		
 		if (parent != null) {
-			ResourceReference resRef = new ResourceReference(parent.getClass(), src);
-			return (urlFor(resRef).toString());
+			PackageResourceReference resRef = new PackageResourceReference(parent.getClass(), src);		
+			//TODO Wicket 6. Check pageParameters because is null.
+			return (urlFor(resRef,null).toString());
 		}
 
 		return (src);
@@ -146,7 +147,7 @@ public abstract class ObjectContainer extends WebMarkupContainer {
 			ClientInfo clientInfo = WebSession.get().getClientInfo();
 
 			if (clientInfo == null || !(clientInfo instanceof WebClientInfo)) {
-				clientInfo = new WebClientInfo((WebRequestCycle) getRequestCycle());
+				clientInfo = new WebClientInfo(getRequestCycle());
 				WebSession.get().setClientInfo(clientInfo);
 			}
 
