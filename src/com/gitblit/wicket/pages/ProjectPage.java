@@ -32,6 +32,9 @@ import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
+import org.apache.wicket.protocol.http.RequestUtils;
+import org.apache.wicket.request.UrlUtils;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.gitblit.GitBlit;
@@ -99,7 +102,10 @@ public class ProjectPage extends RootPage {
 		add(new Label("projectTitle", project.getDisplayName()));
 		add(new Label("projectDescription", project.description));
 		
-		String feedLink = SyndicationServlet.asLink(getRequest().getRelativePathPrefixToContextRoot(), projectName, null, 0);
+		//TODO Wicket 6
+		// getRequest().getRelativePathPrefixToContextRoot() ==>
+		// UrlUtils.rewriteToContextRelative(getRequest().getUrl().toString(), getRequestCycle())
+		String feedLink = SyndicationServlet.asLink(UrlUtils.rewriteToContextRelative(getRequest().getUrl().toString(), getRequestCycle()), projectName, null, 0);
 		add(new ExternalLink("syndication", feedLink));
 
 		add(WicketUtils.syndicationDiscoveryLink(SyndicationServlet.getTitle(project.getDisplayName(),

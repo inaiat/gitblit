@@ -128,8 +128,7 @@ public abstract class RepositoryPage extends BasePage {
 		NavigationPanel navigationPanel = new NavigationPanel("navPanel", getClass(), pages);
 		add(navigationPanel);
 
-		add(new ExternalLink("syndication", SyndicationServlet.asLink(getRequest()
-				.getRelativePathPrefixToContextRoot(), repositoryName, null, 0)));
+		add(new ExternalLink("syndication", SyndicationServlet.asLink(UrlUtils.rewriteToContextRelative(getRequest().getUrl().toString(), getRequestCycle()), repositoryName, null, 0)));
 
 		// add floating search form
 		SearchForm searchForm = new SearchForm("searchForm", repositoryName);
@@ -307,8 +306,7 @@ public abstract class RepositoryPage extends BasePage {
 
 	protected void addSyndicationDiscoveryLink() {
 		add(WicketUtils.syndicationDiscoveryLink(SyndicationServlet.getTitle(repositoryName,
-				objectId), SyndicationServlet.asLink(getRequest()
-				.getRelativePathPrefixToContextRoot(), repositoryName, objectId, 0)));
+				objectId), SyndicationServlet.asLink(UrlUtils.rewriteToContextRelative(getRequest().getUrl().toString(), getRequestCycle()), repositoryName, objectId, 0)));
 	}
 
 	protected Repository getRepository() {

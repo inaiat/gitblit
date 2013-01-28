@@ -239,13 +239,13 @@ public class WicketUtils {
 		return HttpUtils.getGitblitURL(req);
 	}
 
-	public static IHeaderContributor syndicationDiscoveryLink(final String feedTitle, final String url) {
+	public static Behavior syndicationDiscoveryLink(final String feedTitle, final String url) {
 
-		return new IHeaderContributor() {
+		return new Behavior()  {
 			private static final long serialVersionUID = 1L;
 			
 			@Override
-			public void renderHead(IHeaderResponse response) {
+			public void renderHead(Component component, IHeaderResponse response) {
 				String contentType = "application/rss+xml";
 
 				StringBuilder buffer = new StringBuilder();

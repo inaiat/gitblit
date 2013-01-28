@@ -33,7 +33,7 @@ public class PatchPage extends WebPage {
 	public PatchPage(PageParameters params) {
 		super(params);
 
-		if (!params.containsKey("r")) {
+		if (params.get("r").isEmpty()) {
 			GitBlitWebSession.get().cacheErrorMessage(getString("gb.repositoryNotSpecified"));
 			redirectToInterceptPage(new RepositoriesPage());
 			return;
